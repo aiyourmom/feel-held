@@ -13,6 +13,15 @@ const TEXT =
   'This one asks nothing of you.';
 
 const OUTPUT_DIR = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+// The gate counts Unicode code points: 1-280, and not only whitespace.
+// Check the contract here so a bad text fails loudly instead of being judged.
+const codePoints = [...TEXT].length;
+if (codePoints < 1 || codePoints > 280 || TEXT.trim().length === 0) {
+  throw new Error(
+    `entry text must be 1-280 code points and not only whitespace, got ${codePoints}`,
+  );
+}
 mkdirSync(OUTPUT_DIR, { recursive: true });
 const out = join(OUTPUT_DIR, 'entry.txt');
 writeFileSync(out, TEXT, 'utf8');
